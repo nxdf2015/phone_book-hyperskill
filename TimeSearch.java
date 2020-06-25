@@ -1,35 +1,54 @@
 package phonebook;
 
+import java.time.Duration;
 import java.time.LocalTime;
+import java.util.List;
 
-public class TimeSearch implements ISearch{
-    private ISearch search;
+public class TimeSearch implements Operation {
+    private Operation search;
+    private LocalTime timeSearch;
+    private LocalTime timeSort = LocalTime.of(0,0,0,0);
 
-    public TimeSearch(ISearch search) {
+    public TimeSearch(Operation search) {
         this.search = search;
     }
 
     @Override
     public void start() {
         long startTime = System.currentTimeMillis();
-        System.out.println("start searching...");
+      //  System.out.println("start searching...");
         search.start();
         long endTime = System.currentTimeMillis();
-        LocalTime timeSearch = LocalTime.ofNanoOfDay((endTime - startTime) * (long)Math.pow(10,6));
-        long second = timeSearch.getSecond();
-        long minute = timeSearch.getMinute();
-        long millisecond = timeSearch.getNano()/(long)Math.pow(10,6);
+        timeSearch = LocalTime.ofNanoOfDay((endTime - startTime) * (long)Math.pow(10,6));
 
-        System.out.printf("Found %d/%d entries. Time taken %d min. %d sec. %d ms. ",getCountFind(),getTotalSearch(),minute,second,millisecond);
+    }
+
+
+
+    @Override
+    public List<PhoneNumber> getData() {
+        return null;
     }
 
     @Override
-    public int getCountFind() {
-        return search.getCountFind();
+    public String toString() {
+        Duration d = Duration.ZERO.plusSeconds(timeSort.getSecond())
+                .plusMinutes(timeSort.getMinute())
+                .plusMillis(timeSort.getNano()/100000);
+        LocalTime totalTime=  (LocalTime) d.addTo(timeSearch);
+        long second = totalTime.getSecond();
+        long minute = totalTime.getMinute();
+        long millisecond = totalTime.getNano()/(long)Math.pow(10,6);
+
+        return search.toString() + String.format(" Time taken %d min. %d sec. %d ms. ",minute,second,millisecond);
     }
 
-    @Override
-    public int getTotalSearch() {
-        return search.getTotalSearch();
+    public void addTimeToSort(LocalTime timeSort){
+        this.timeSort = timeSort;
     }
+    public LocalTime getTimeSearch() {
+        return timeSearch;
+    }
+
+
 }

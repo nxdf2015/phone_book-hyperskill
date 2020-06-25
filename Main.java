@@ -1,14 +1,16 @@
 package phonebook;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.sql.Time;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAmount;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
+PhoneNumber a = new PhoneNumber("12333","b");
 
         String dataPath ="D:\\hyperskill\\phonebook\\";
         String directory = dataPath + "directory.txt";
@@ -16,42 +18,52 @@ public class Main {
 
 
 
-            List<PhoneNumber> phoneList = new ArrayList<>();
+
             List<String> findList =null;
 
-            try(BufferedReader reader = new BufferedReader(new FileReader(new File(directory))) ) {
+            Data data =new Data(directory,findPath);
+            data.get();
 
-                String line;
-                Pattern  linePattern = Pattern.compile("(\\d+)\\s(.+)");
 
-           while((line  = reader.readLine())!= null)
-            {
-                  Matcher matcher = linePattern.matcher(line);
-                          matcher.matches();
+            TimeSearch search = new TimeSearch(new LinearSearch(data.getPhoneList(),data.getFindList()));
 
-                          String number = matcher.group(1);
-                          String name = matcher.group(2);
-                 phoneList.add(new PhoneNumber(number,name));
+            System.out.println("Start searching (linear search)...");
+            search.start();
+
+            System.out.println(search);
+            System.out.println();
+
+
+            LocalTime timeSearch = search.getTimeSearch();
+            LocalTime timeSort;
+            LocalTime totalSearch;
+            data.setTimeSearch(timeSearch);
+            System.out.println("Start searching (bubble sort + jump search)...");
+
+            BubbleSort bubbleSort = new BubbleSort(data,timeSearch);
+            bubbleSort.start();
+            Operation operation;
+
+            if (bubbleSort.isSorted()){
+                operation = new JumpSearch(bubbleSort.getData(),data.getFindList());
+
             }
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            else{
+               operation = new LinearSearch(bubbleSort.getData(),data.getFindList());
             }
-
-            try(BufferedReader reader = new BufferedReader(new FileReader(new File(findPath)))) {
-                String line;
-                findList = reader.lines().collect(Collectors.toList());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            ISearch search = new TimeSearch(new Search(phoneList,findList));
+            search = new TimeSearch(operation);
 
             search.start();
+
+            search.addTimeToSort(bubbleSort.getTimeSort());
+
+        System.out.println(search);
+        System.out.println(bubbleSort);
+        LocalTime timesearch = search.getTimeSearch();
+        System.out.println("Searching time: "+ String.format("%d min. %d sec. %d ms.",timeSearch.getMinute(),timeSearch.getSecond(),
+                timeSearch.getNano()/(long)Math.pow(10,6)));
+
+
 
     }
 }
