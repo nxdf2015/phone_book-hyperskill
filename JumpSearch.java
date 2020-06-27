@@ -65,8 +65,13 @@ public class JumpSearch implements Operation {
         return phoneList;
     }
 
-    @Override
-    public String toString() {
-        return "Searching time: ";
-    }
+//    @Override
+//    public String toString() {
+//        return "Searching time: ";
+//    }
+@Override
+public String toString() {
+
+    return  String.format("Found %d / %d entries",countFind,findList.size());
+}
 }

@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-PhoneNumber a = new PhoneNumber("12333","b");
 
         String dataPath ="D:\\hyperskill\\phonebook\\";
         String directory = dataPath + "directory.txt";
@@ -23,6 +22,7 @@ PhoneNumber a = new PhoneNumber("12333","b");
 
             Data data =new Data(directory,findPath);
             data.get();
+
 
 
             TimeSearch search = new TimeSearch(new LinearSearch(data.getPhoneList(),data.getFindList()));
@@ -38,6 +38,8 @@ PhoneNumber a = new PhoneNumber("12333","b");
             LocalTime timeSort;
             LocalTime totalSearch;
             data.setTimeSearch(timeSearch);
+
+
             System.out.println("Start searching (bubble sort + jump search)...");
 
             BubbleSort bubbleSort = new BubbleSort(data,timeSearch);
@@ -59,10 +61,27 @@ PhoneNumber a = new PhoneNumber("12333","b");
 
         System.out.println(search);
         System.out.println(bubbleSort);
-        LocalTime timesearch = search.getTimeSearch();
+          timeSearch = search.getTimeSearch();
+
         System.out.println("Searching time: "+ String.format("%d min. %d sec. %d ms.",timeSearch.getMinute(),timeSearch.getSecond(),
                 timeSearch.getNano()/(long)Math.pow(10,6)));
 
+        System.out.println();
+        System.out.println("Start searching (quick sort + binary search)...");
+        QuickSort quickSort = new QuickSort(data.getPhoneList());
+        quickSort.start();
+
+        Operation binarySearch = new BinarySearch(quickSort.getData(),data.getFindList());
+
+        search = new TimeSearch(binarySearch);
+        search.start();
+        search.addTimeToSort(quickSort.getTimeSort());
+
+        timeSearch = search.getTimeSearch();
+        System.out.println(search);
+        System.out.println(quickSort);
+        System.out.println("Searching time: "+ String.format("%d min. %d sec. %d ms.",timeSearch.getMinute(),timeSearch.getSecond(),
+                timeSearch.getNano()/(long)Math.pow(10,6)));
 
 
     }

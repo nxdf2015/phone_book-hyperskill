@@ -32,9 +32,10 @@ public class TimeSearch implements Operation {
 
     @Override
     public String toString() {
+
         Duration d = Duration.ZERO.plusSeconds(timeSort.getSecond())
                 .plusMinutes(timeSort.getMinute())
-                .plusMillis(timeSort.getNano()/100000);
+                .plusMillis(timeSort.getNano()/1000000);
         LocalTime totalTime=  (LocalTime) d.addTo(timeSearch);
         long second = totalTime.getSecond();
         long minute = totalTime.getMinute();

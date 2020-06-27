@@ -31,11 +31,12 @@ public class Data {
     }
 
     public List<PhoneNumber> getPhoneList() {
-        return phoneList;
+        return phoneList.subList(0,phoneList.size()-1);
     }
     public void setTimeSearch(LocalTime timeSearch){
         this.timeSearch = timeSearch;
     }
+
     public void get(){
         getData();
         getListToFind();
@@ -84,9 +85,7 @@ public class Data {
     }
 
 
-    public List<String> getListToSearch() {
-        return findList;
-    }
+
 
     public List<String> getFindList() {
         return findList;
